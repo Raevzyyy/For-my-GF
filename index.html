@@ -1,22 +1,77 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Valentine Puzzle</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: pink;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 400px;
+            margin: auto;
+        }
+        .piece {
+            width: 100px;
+            height: 100px;
+            background-size: 400px 400px;
+            border: 1px solid white;
+            cursor: pointer;
+        }
+        h1 {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    <audio id="romanticMusic" src="romantic-music.mp3" loop></audio>
-    <div class="background"></div>
-    <div class="container">
-        <h1>Happy Valentine's Day! 💖</h1>
-        <p class="message">Semoga harimu penuh cinta dan kebahagiaan! 🌹</p>
-        <input type="file" id="imageUpload" accept="image/*">
-        <img id="uploadedImage" class="hidden" alt="Uploaded" />
-        <button onclick="showGreeting()">Klik untuk Ucapan Spesial ❤️</button>
-        <p id="greeting" class="hidden"></p>
-    </div>
-    <script src="script.js"></script>
+    <h1>Valentine Puzzle ❤️</h1>
+    <div class="container" id="puzzle"></div>
+    <script>
+        const imageSrc = "Tanpa Judul.webp"; // Gambar yang diunggah
+        const container = document.getElementById("puzzle");
+        let positions = [];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function createPuzzle() {
+            for (let i = 0; i < 16; i++) {
+                positions.push(i);
+            }
+            shuffle(positions);
+
+            for (let i = 0; i < 16; i++) {
+                let piece = document.createElement("div");
+                piece.classList.add("piece");
+                piece.style.backgroundImage = `url('${imageSrc}')`;
+                piece.style.backgroundPosition = `${-100 * (positions[i] % 4)}px ${-100 * Math.floor(positions[i] / 4)}px`;
+                piece.dataset.index = positions[i];
+                piece.addEventListener("click", swapPieces);
+                container.appendChild(piece);
+            }
+        }
+
+        function swapPieces(event) {
+            let clickedPiece = event.target;
+            let emptyIndex = positions.indexOf(15);
+            let clickedIndex = [...container.children].indexOf(clickedPiece);
+
+            if ([clickedIndex - 1, clickedIndex + 1, clickedIndex - 4, clickedIndex + 4].includes(emptyIndex)) {
+                [positions[emptyIndex], positions[clickedIndex]] = [positions[clickedIndex], positions[emptyIndex]];
+                container.innerHTML = "";
+                createPuzzle();
+            }
+        }
+
+        createPuzzle();
+    </script>
 </body>
 </html>
