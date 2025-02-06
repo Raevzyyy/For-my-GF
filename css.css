@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #ff758c, #ff7eb3);
+    overflow: hidden;
+    position: relative;
+}
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+.sparkle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    opacity: 0.8;
+    border-radius: 50%;
+    box-shadow: 0 0 5px white;
+    animation: sparkle-animation 2s infinite;
+}
+@keyframes sparkle-animation {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(0.5); }
+}
+@keyframes fall {
+    from { transform: translateY(0) rotate(0deg); opacity: 1; }
+    to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+@keyframes sway {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(20px); }
+    100% { transform: translateX(-20px); }
+}
+
+// File: script.js
+function showGreeting() {
+    const greeting = document.getElementById("greeting");
+    greeting.textContent = "Selamat Hari Valentine! ❤️";
+    greeting.classList.remove("hidden");
+    document.getElementById("romanticMusic").play();
+    createFallingEffects();
+    createSparkles();
+}
+
+document.getElementById("imageUpload").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const uploadedImage = document.getElementById("uploadedImage");
+            uploadedImage.src = e.target.result;
+            uploadedImage.classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function createFallingEffects() {
+    for (let i = 0; i < 20; i++) {
+        let heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.classList.add("heart");
+        document.body.appendChild(heart);
+        animateElement(heart);
+
+        let petal = document.createElement("div");
+        petal.innerHTML = "🌹";
+        petal.classList.add("petal");
+        petal.style.animation = `fall ${3 + Math.random() * 3}s linear infinite, sway ${2 + Math.random() * 2}s ease-in-out infinite`;
+        document.body.appendChild(petal);
+        animateElement(petal);
+    }
+}
+
+function createSparkles() {
+    for (let i = 0; i < 30; i++) {
+        let sparkle = document.createElement("div");
+        sparkle.classList.add("sparkle");
+        document.querySelector(".background").appendChild(sparkle);
+        animateSparkle(sparkle);
+    }
+}
+
+function animateElement(element) {
+    let startPos = Math.random() * window.innerWidth;
+    element.style.left = startPos + "px";
+    element.style.animationDuration = 3 + Math.random() * 3 + "s";
+    setTimeout(() => { element.remove(); }, 6000);
+}
+
+function animateSparkle(element) {
+    element.style.left = Math.random() * window.innerWidth + "px";
+    element.style.top = Math.random() * window.innerHeight + "px";
+    element.style.animationDuration = 1 + Math.random() * 2 + "s";
+    setTimeout(() => { element.remove(); }, 3000);
+}
